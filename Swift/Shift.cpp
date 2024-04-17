@@ -25,7 +25,7 @@ int main()
 	cout << "how much to shift: " << endl;
 	cin >> shift;
 
-	if (pos < 0 || shift <= 0 || pos + 1 > l.count) {
+	if (pos < 0 || shift <= 0 || pos > l.count) {
 		cout << "error\n";
 		return -1;
 	}
@@ -33,26 +33,29 @@ int main()
 	int pos2 = pos - shift;
 	if (pos2 < 0) pos2 = 0;
 	auto cur = l.first;
-	list2_elem<int>* toShift = nullptr;
-	for (int i = 0; i < pos; i++) {
-		if (i == pos2)
-			toShift = cur;
-		cur = cur->next;
+	if (pos > 0) {
+		list2_elem<int>* toShift = nullptr;
+		for (int i = 0; i < pos; i++) {
+			if (i == pos2)
+				toShift = cur;
+			cur = cur->next;
+		}
+		auto prev = cur->prev;
+		auto next = cur->next;
+		if (prev != nullptr)
+			prev->next = next;
+		if (next != nullptr)
+			next->prev = prev;
+		if (toShift->prev != nullptr)
+			toShift->prev->next = cur;
+		cur->prev = toShift->prev;
+		cur->next = toShift;
+
+		if (pos2 == 0)
+			l.first = cur;
+		if (pos + 1 == l.count)
+			l.last = prev;
 	}
-	auto prev = cur->prev;
-	auto next = cur->next;
-	if (prev != nullptr)
-		prev->next = next;
-	if (next != nullptr)
-		next->prev = prev;
-	toShift -> prev->next = cur;
-	cur -> prev = toShift->prev;
-	cur->next = toShift;
-	
-	if (pos2 == 0)
-		l.first = cur;
-	if (pos + 1 == l.count)
-		l.last = prev;
 
 	auto c = l.first;
 	cout << endl;
